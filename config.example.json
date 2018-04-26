@@ -1,0 +1,28 @@
+{
+  "concourse": {
+    "url": "url-for-webhooks",
+    "team": "your-team",
+    "target": "as in fly -t "
+  },
+  "repositories": [
+    {
+      "type": "github",
+      "resourceType": "git",
+      "password": "access token"
+    },
+    {
+      "type": "gitea",
+      "resourceType": "git",
+      "url": "url of web interface",
+      "username": "repo admin user",
+      "password": "password"
+    },
+    {
+      "type": "bitbucket",
+      "resourceType": "git",
+      "url": "url of web interface",
+      "username": "repo admin user",
+      "password": "password"
+    }
+  ]
+}

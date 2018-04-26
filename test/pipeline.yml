@@ -1,0 +1,89 @@
+resource_types:
+- name: alternate-git
+  type: docker-image
+  source:
+    repository: concourse/git-resource
+
+resources:
+- name: source-code
+  type: git
+  webhook_token: omg123123123
+  source:
+    uri: ((git.uri))
+    private_key: ((git.private_key))
+
+- name: source-code2
+  type: git
+  check_every: 24h
+  source:
+    uri: ((git2.uri))
+    username: ((git2.username))
+    password: ((git2.password))
+
+- name: source-code3
+  type: alternate-git
+  webhook_token: 123lalala
+  check_every: 24h
+  source:
+    uri: ((git2.uri))
+    username: ((git2.username))
+    password: ((git2.password))
+
+- name: source-code4
+  type: git
+  source:
+    uri: ((git3.uri))
+    username: ((git3.username))
+    password: ((git3.password))
+
+- name: source-code5
+  type: git
+  source:
+    uri: ((git4.uri))
+    username: ((git4.username))
+    password: ((git4.password))
+
+- name: runtime
+  type: docker-image
+  check_every: 24h
+  source:
+    repository: alpine
+
+jobs:
+- name: test
+  plan:
+  - aggregate:
+    - get: source-code
+      trigger: true
+    - get: source-code2
+      trigger: true
+    - get: source-code3
+      trigger: true
+    - get: source-code4
+      trigger: true
+    - get: source-code5
+      trigger: true
+    - get: runtime
+      trigger: true
+  - task: test
+    image: runtime
+    config:
+      platform: linux
+      inputs:
+      - name: source-code
+      - name: source-code2
+      - name: source-code3
+      - name: source-code4
+      - name: source-code5
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          date
+          find . -type f \
+          | grep -v \.git \
+          | while read file; do
+            echo $file
+            cat "$file"
+          done

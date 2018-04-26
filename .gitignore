@@ -1,0 +1,7 @@
+.idea/
+db/
+dist/
+*.iml
+node_modules/
+coverage/
+config.json
